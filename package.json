@@ -1,10 +1,15 @@
 {
   "name": "matter-ai-cli",
   "description": "Matter AI CLI to generate AI Summaries for your PRs",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "main": "index.js",
+  "homepage": "https://matterai.dev",
   "scripts": {},
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GravityCloudAI/matter-ai-cli.git"
+  },
   "bin": {
     "matter": "bin/index.js"
   },
