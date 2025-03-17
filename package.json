@@ -1,0 +1,29 @@
+{
+  "name": "matter-ai-cli",
+  "description": "Matter AI CLI to generate AI Summaries for your PRs",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {},
+  "type": "module",
+  "bin": {
+    "matter": "bin/index.js"
+  },
+  "keywords": [
+    "matter",
+    "ai",
+    "cli",
+    "pr",
+    "summary"
+  ],
+  "author": "support@matterai.dev",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "execa": "^9.5.2",
+    "inquirer": "^12.4.2",
+    "marked": "^15.0.7",
+    "marked-terminal": "^7.3.0",
+    "node-fetch": "^3.3.2",
+    "open": "^10.1.0"
+  }
+}
