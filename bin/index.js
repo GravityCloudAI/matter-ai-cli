@@ -286,9 +286,27 @@ async function main() {
   selectedPRData.filesChanged = filesChanged;
   selectedPRData.totalFilesChanged = filesChanged.length;
 
+  // Prompt user to select the type of AI content
+  const { contentType } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "contentType",
+      message: chalk.cyan("What would you like to generate?"),
+      choices: [
+        { name: "AI Summary", value: "summary" },
+        { name: "AI Code Review", value: "codeReview" },
+        { name: "AI Explanation", value: "explanation" }
+      ]
+    }
+  ]);
 
-  console.log(chalk.blue(`\nGenerating AI Summary...`));
+  // Handle based on selected content type
+  if (contentType === "codeReview" || contentType === "explanation") {
+    console.log(chalk.green("\nOnly Available in Hosted or Enterprise version. Get started here: https://matterai.dev"));
+    process.exit(0);
+  }
 
+  // Continue with existing summary code for "summary" option
   const systemPrompt = `You are a senior software engineer whos job is to generate summary for github pull request`
 
   const userPrompt = `This is the PR Data in JSON format: ${JSON.stringify(selectedPRData)}. Return the generated Summary under the following headings PR Title, 🔄 What Changed, 🔍 Impact of the Change, 📁 Total Files Changed, 🧪 Test Added(explain each test in detail), 🔒Security Vulnerabilities.`
