@@ -238,11 +238,49 @@ async function getFilesChangedInPR(owner, repo, prNumber, token) {
       status: file.status,
       additions: file.additions,
       deletions: file.deletions,
-      changes: file.changes
+      changes: file.changes,
+      patch: file.patch
     }));
   } catch (error) {
     console.error(chalk.yellow(`Error fetching files for PR #${prNumber}: ${error.message}`));
     return [];
+  }
+}
+
+const getPullRequestTemplate = async (token, repo, owner) => {
+  if (!token) {
+    console.log(chalk.yellow("No GitHub token available, skipping PR template fetch."));
+    return null;
+  }
+
+  try {
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/.github/pull_request_template.md`;
+
+    const headers = {
+      "User-Agent": "PR-Checkout-CLI",
+      "Authorization": `Bearer ${token}`
+    };
+
+    const response = await fetch(apiUrl, { headers });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        // Template doesn't exist, which is fine
+        return null;
+      }
+      console.log(chalk.yellow(`Error fetching PR template: ${response.status} ${response.statusText}`));
+      return null;
+    }
+
+    const data = await response.json();
+
+    if (data.content) {
+      return Buffer.from(data.content, 'base64').toString();
+    }
+    return null;
+  } catch (error) {
+    console.log(chalk.yellow("Error fetching PR template:", error.message));
+    return null;
   }
 }
 
@@ -293,7 +331,7 @@ async function main() {
       name: "contentType",
       message: chalk.cyan("What would you like to generate?"),
       choices: [
-        { name: "AI Summary", value: "summary" },
+        { name: "AI Summary(will generate a completed checklist for the PR, if present)", value: "summary" },
         { name: "AI Code Review", value: "codeReview" },
         { name: "AI Explanation", value: "explanation" }
       ]
@@ -306,10 +344,12 @@ async function main() {
     process.exit(0);
   }
 
+  const pullRequestTemplate = await getPullRequestTemplate(token, repo, owner);
+
   // Continue with existing summary code for "summary" option
   const systemPrompt = `You are a senior software engineer whos job is to generate summary for github pull request`
 
-  const userPrompt = `This is the PR Data in JSON format: ${JSON.stringify(selectedPRData)}. Return the generated Summary under the following headings PR Title, 🔄 What Changed, 🔍 Impact of the Change, 📁 Total Files Changed, 🧪 Test Added(explain each test in detail), 🔒Security Vulnerabilities.`
+  const userPrompt = `This is the PR Data in JSON format: ${JSON.stringify(selectedPRData)}. ${pullRequestTemplate ? `This is the pull request template: ${pullRequestTemplate} \n\n Generate a fully completed pull request checklist in markdown format using the PullRequestChecklistTemplate and JSON Github data. **Replace the entire 'Description' section** with a detailed and a structured summary containing the following subheaders: ### 🔄 What Changed(explain in detail each change), ### 🔍 Impact of the Change, ### 📁 Total Files Changed, ### 🧪 Test Added, ### 🔒 Security Vulnerabilities. Populate each subheader with data from the PR JSON. Do NOT retain the original PR's description text. Every section must be populated with relevant information from the JSON, use the section header and points to generate the relevant data. If the section already has placeholders, replace them all with your data. If a section is optional and the data is unavailable, update that section with N/A in the output.` : "Return the generated Summary under the following headings PR Title, 🔄 What Changed, 🔍 Impact of the Change, 📁 Total Files Changed, 🧪 Test Added(explain each test in detail), 🔒Security Vulnerabilities."}`
 
   // Get OpenAI API key from environment or prompt user
   let openaiApiKey = process.env.OPENAI_API_KEY;
