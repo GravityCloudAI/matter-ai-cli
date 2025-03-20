@@ -11,7 +11,7 @@ This CLI is an official tool from [Matter AI](https://matterai.dev) to help you 
 ## Installation
 
 ```bash
-npm install -g matter-ai-cli
+npm install -g matter-ai
 ```
 
 ## Usage

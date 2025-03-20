@@ -1,5 +1,5 @@
 {
-  "name": "matter-ai-cli",
+  "name": "matter-ai",
   "description": "Matter AI CLI to generate AI Summaries for your PRs",
   "version": "0.1.4",
   "main": "index.js",
