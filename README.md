@@ -23,3 +23,6 @@ npm install -g matter-ai
 5. Select the PR you want to summarize.
 6. Enter your Open AI API Key when prompted. This can automatically be picked from `OPENAI_API_KEY` environment variable.
 6. Enjoy the summary!
+
+## Documentation
+You can find the detailed documentation here: [https://docs.matterai.dev/quickstart-ai-code-review-cli](https://docs.matterai.dev/quickstart-ai-code-review-cli)
