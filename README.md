@@ -1,3 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/matter-ai.svg)](https://www.npmjs.com/package/matter-ai)
+[![npm downloads](https://img.shields.io/npm/dt/matter-ai.svg)](https://www.npmjs.com/package/matter-ai)
+[![GitHub License](https://img.shields.io/github/license/GravityCloudAI/matter-ai-cli)](https://github.com/GravityCloudAI/matter/blob/matter-ai-cli/LICENSE)
+
 # Matter AI CLI
 
 A command-line tool that helps you generate AI-powered summaries to understand changes quickly.
